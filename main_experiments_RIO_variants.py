@@ -21,7 +21,7 @@ from util import dataset_read, RIO_variants_running
 print(tf.__version__)
 
 #change dataset_index to select which dataset to use (0-11)
-dataset_index = 0
+dataset_index = 4
 model_name = "SVGP"
 #number of Epochs for NN training
 EPOCHS = 1000
@@ -29,7 +29,7 @@ EPOCHS = 1000
 M = 50
 
 dataset_name_list = ["yacht","ENB_heating","ENB_cooling","airfoil_self_noise","concrete","winequality-red","winequality-white","CCPP","CASP","SuperConduct","slice_localization","MSD"]
-label_name_list = ["Residuary resistance", "Y1", "Y2", "sound pressure", "Mpa", "quality", "quality", "PE", "RMSD", "critical_temp", "reference", 0]
+label_name_list = ["Residuary resistance", "Y1", "Y2", "sound pressure", "Concrete compressive strength(MPa, megapascals) ", "quality", "quality", "PE", "RMSD", "critical_temp", "reference", 0]
 title_name_list = ["yacht","ENB/h","ENB/c","airfoil","CCS","wine/r","wine/w","CCPP","protein","SC","CT","MSD"]
 minibatch_size_list = [246,614,614,1202,824,1279,3918,7654,36584,17010,42800,463715]
 NN_size_list = ["64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","128+128","256+256","64+64+64+64"]

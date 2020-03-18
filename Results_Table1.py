@@ -24,7 +24,7 @@ import math
 print(tf.__version__)
 
 #change dataset_index to select which dataset to use (0-11)
-dataset_index = 11
+dataset_index = 4
 
 dataset_name_list = ["yacht","ENB_heating","ENB_cooling","airfoil_self_noise","concrete","winequality-red","winequality-white","CCPP","CASP","SuperConduct","slice_localization","MSD"]
 minibatch_size_list = [246,614,614,1202,824,1279,3918,7654,36584,17010,42800,463715]
@@ -63,9 +63,7 @@ result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Resu
 with open(result_file_name, 'rb') as result_file:
     computation_time_NN = pickle.load(result_file)
 
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
+
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:
@@ -128,9 +126,6 @@ print("{} NLPD std: {}".format(framework_variant, np.array(pdf_all_RIO).std()))
 
 kernel_type = "RBF"
 framework_variant = "GP_corrected_inputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:
@@ -174,11 +169,15 @@ for i in range(len(hyperparameter)):
 print("{} noise variance: {}".format(framework_variant, np.array(noise_variance).mean()))
 #print("{} hyperparameters: {}".format(framework_variant, np.mean(np.array(hyperparameter), axis=0)))
 pdf_all = []
+import ipdb
+ipdb.set_trace()
 for run in range(len(Storage_test_labels)):
     pdf_tmp = []
     for i in range(len(Storage_test_labels[run])):
         pdf_tmp.append(-math.log(norm_pdf(Storage_test_labels[run][i], Storage_test_predictions[run][i] + Storage_mean[run][i], Storage_var[run][i])+sys.float_info.epsilon))
     pdf_all.append(np.array(pdf_tmp).mean())
+
+
 print("{} NLPD mean: {}".format(framework_variant, np.array(pdf_all).mean()))
 print("{} NLPD std: {}".format(framework_variant, np.array(pdf_all).std()))
 print("{} ttest_rel score: {}".format(framework_variant, stats.ttest_rel(pdf_all, pdf_all_RIO)))
@@ -186,9 +185,6 @@ print("{} wilcoxon score: {}".format(framework_variant, stats.wilcoxon(pdf_all, 
 
 kernel_type = "RBFY"
 framework_variant = "GP_corrected_outputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:
@@ -244,9 +240,7 @@ print("{} wilcoxon score: {}".format(framework_variant, stats.wilcoxon(pdf_all, 
 
 kernel_type = "RBF+RBF"
 framework_variant = "GP"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
+
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:
@@ -302,9 +296,7 @@ print("{} wilcoxon score: {}".format(framework_variant, stats.wilcoxon(pdf_all, 
 
 kernel_type = "RBF"
 framework_variant = "GP_inputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
+
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:
@@ -360,9 +352,6 @@ print("{} wilcoxon score: {}".format(framework_variant, stats.wilcoxon(pdf_all, 
 
 kernel_type = "RBFY"
 framework_variant = "GP_outputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'rb') as result_file:
-    MAE = pickle.load(result_file)
 
 result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
 with open(result_file_name, 'rb') as result_file:

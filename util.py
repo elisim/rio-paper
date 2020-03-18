@@ -90,7 +90,7 @@ def dataset_read(dataset_name):
     return dataset
 
 def RIO_variants_running(framework_variant, kernel_type, normed_train_data, normed_test_data, train_labels, test_labels, train_NN_predictions, test_NN_predictions, M):
-    train_NN_errors = train_labels - train_NN_predictions
+    train_NN_errors = train_labels - train_NN_predictions  # residuals
     combined_train_data = normed_train_data.copy()
     combined_train_data['prediction'] = train_NN_predictions
     combined_test_data = normed_test_data.copy()
