@@ -21,7 +21,7 @@ from util import dataset_read, RIO_variants_running
 print(tf.__version__)
 
 #change dataset_index to select which dataset to use (0-11)
-dataset_index = 4
+dataset_index = 10
 model_name = "SVGP"
 #number of Epochs for NN training
 EPOCHS = 1000
@@ -34,7 +34,7 @@ title_name_list = ["yacht","ENB/h","ENB/c","airfoil","CCS","wine/r","wine/w","CC
 minibatch_size_list = [246,614,614,1202,824,1279,3918,7654,36584,17010,42800,463715]
 NN_size_list = ["64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","128+128","256+256","64+64+64+64"]
 layer_width_list = [64,64,64,64,64,64,64,64,64,128,256,64]
-RUNS_list = [100,100,100,100,100,100,100,100,100,100,100,10]
+RUNS_list = [100,100,100,100,100,100,100,100,100,100,10,10]
 
 label_name = label_name_list[dataset_index]
 dataset_name = dataset_name_list[dataset_index]
@@ -184,6 +184,7 @@ for run in range(RUNS):
         # running RIO
         kernel_type = "RBF+RBF"
         framework_variant = "GP_corrected"
+
         MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
                                                                                                                                                   kernel_type, \
                                                                                                                                                   normed_train_data, \
@@ -202,110 +203,110 @@ for run in range(RUNS):
         computation_time_GPcorrected.append(computation_time)
         hyperparameter_GPcorrected.append(hyperparameter)
 
-        # running "R+I" variant
-        kernel_type = "RBF"
-        framework_variant = "GP_corrected_inputOnly"
-        MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
-                                                                                                                                                  kernel_type, \
-                                                                                                                                                  normed_train_data, \
-                                                                                                                                                  normed_test_data, \
-                                                                                                                                                  train_labels, \
-                                                                                                                                                  test_labels, \
-                                                                                                                                                  train_NN_predictions, \
-                                                                                                                                                  test_NN_predictions, \
-                                                                                                                                                  M)
-        MAE_GPcorrected_inputOnly.append(MAE)
-        PCT_within95Interval_GPcorrected_inputOnly.append(PCT_within95Interval)
-        PCT_within90Interval_GPcorrected_inputOnly.append(PCT_within90Interval)
-        PCT_within68Interval_GPcorrected_inputOnly.append(PCT_within68Interval)
-        Storage_mean_GPcorrected_inputOnly.append(mean)
-        Storage_var_GPcorrected_inputOnly.append(var)
-        computation_time_GPcorrected_inputOnly.append(computation_time)
-        hyperparameter_GPcorrected_inputOnly.append(hyperparameter)
-
-        # running "R+O" variant
-        kernel_type = "RBFY"
-        framework_variant = "GP_corrected_outputOnly"
-        MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
-                                                                                                                                                  kernel_type, \
-                                                                                                                                                  normed_train_data, \
-                                                                                                                                                  normed_test_data, \
-                                                                                                                                                  train_labels, \
-                                                                                                                                                  test_labels, \
-                                                                                                                                                  train_NN_predictions, \
-                                                                                                                                                  test_NN_predictions, \
-                                                                                                                                                  M)
-        MAE_GPcorrected_outputOnly.append(MAE)
-        PCT_within95Interval_GPcorrected_outputOnly.append(PCT_within95Interval)
-        PCT_within90Interval_GPcorrected_outputOnly.append(PCT_within90Interval)
-        PCT_within68Interval_GPcorrected_outputOnly.append(PCT_within68Interval)
-        Storage_mean_GPcorrected_outputOnly.append(mean)
-        Storage_var_GPcorrected_outputOnly.append(var)
-        computation_time_GPcorrected_outputOnly.append(computation_time)
-        hyperparameter_GPcorrected_outputOnly.append(hyperparameter)
-
-        # running "Y+IO" variant
-        kernel_type = "RBF+RBF"
-        framework_variant = "GP"
-        MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
-                                                                                                                                                  kernel_type, \
-                                                                                                                                                  normed_train_data, \
-                                                                                                                                                  normed_test_data, \
-                                                                                                                                                  train_labels, \
-                                                                                                                                                  test_labels, \
-                                                                                                                                                  train_NN_predictions, \
-                                                                                                                                                  test_NN_predictions, \
-                                                                                                                                                  M)
-        MAE_GP.append(MAE)
-        PCT_within95Interval_GP.append(PCT_within95Interval)
-        PCT_within90Interval_GP.append(PCT_within90Interval)
-        PCT_within68Interval_GP.append(PCT_within68Interval)
-        Storage_mean_GP.append(mean)
-        Storage_var_GP.append(var)
-        computation_time_GP.append(computation_time)
-        hyperparameter_GP.append(hyperparameter)
-
-        # running "Y+I" variant, i.e., original SVGP
-        kernel_type = "RBF"
-        framework_variant = "GP_inputOnly"
-        MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
-                                                                                                                                                  kernel_type, \
-                                                                                                                                                  normed_train_data, \
-                                                                                                                                                  normed_test_data, \
-                                                                                                                                                  train_labels, \
-                                                                                                                                                  test_labels, \
-                                                                                                                                                  train_NN_predictions, \
-                                                                                                                                                  test_NN_predictions, \
-                                                                                                                                                  M)
-        MAE_GP_inputOnly.append(MAE)
-        PCT_within95Interval_GP_inputOnly.append(PCT_within95Interval)
-        PCT_within90Interval_GP_inputOnly.append(PCT_within90Interval)
-        PCT_within68Interval_GP_inputOnly.append(PCT_within68Interval)
-        Storage_mean_GP_inputOnly.append(mean)
-        Storage_var_GP_inputOnly.append(var)
-        computation_time_GP_inputOnly.append(computation_time)
-        hyperparameter_GP_inputOnly.append(hyperparameter)
-
-        # running "Y+O" variant
-        kernel_type = "RBFY"
-        framework_variant = "GP_outputOnly"
-        MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
-                                                                                                                                                  kernel_type, \
-                                                                                                                                                  normed_train_data, \
-                                                                                                                                                  normed_test_data, \
-                                                                                                                                                  train_labels, \
-                                                                                                                                                  test_labels, \
-                                                                                                                                                  train_NN_predictions, \
-                                                                                                                                                  test_NN_predictions, \
-                                                                                                                                                  M)
-        MAE_GP_outputOnly.append(MAE)
-        PCT_within95Interval_GP_outputOnly.append(PCT_within95Interval)
-        PCT_within90Interval_GP_outputOnly.append(PCT_within90Interval)
-        PCT_within68Interval_GP_outputOnly.append(PCT_within68Interval)
-        Storage_mean_GP_outputOnly.append(mean)
-        Storage_var_GP_outputOnly.append(var)
-        computation_time_GP_outputOnly.append(computation_time)
-        hyperparameter_GP_outputOnly.append(hyperparameter)
+        # # running "R+I" variant
+        # kernel_type = "RBF"
+        # framework_variant = "GP_corrected_inputOnly"
+        # MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
+        #                                                                                                                                           kernel_type, \
+        #                                                                                                                                           normed_train_data, \
+        #                                                                                                                                           normed_test_data, \
+        #                                                                                                                                           train_labels, \
+        #                                                                                                                                           test_labels, \
+        #                                                                                                                                           train_NN_predictions, \
+        #                                                                                                                                           test_NN_predictions, \
+        #                                                                                                                                           M)
+        # MAE_GPcorrected_inputOnly.append(MAE)
+        # PCT_within95Interval_GPcorrected_inputOnly.append(PCT_within95Interval)
+        # PCT_within90Interval_GPcorrected_inputOnly.append(PCT_within90Interval)
+        # PCT_within68Interval_GPcorrected_inputOnly.append(PCT_within68Interval)
+        # Storage_mean_GPcorrected_inputOnly.append(mean)
+        # Storage_var_GPcorrected_inputOnly.append(var)
+        # computation_time_GPcorrected_inputOnly.append(computation_time)
+        # hyperparameter_GPcorrected_inputOnly.append(hyperparameter)
+        #
+        # # running "R+O" variant
+        # kernel_type = "RBFY"
+        # framework_variant = "GP_corrected_outputOnly"
+        # MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
+        #                                                                                                                                           kernel_type, \
+        #                                                                                                                                           normed_train_data, \
+        #                                                                                                                                           normed_test_data, \
+        #                                                                                                                                           train_labels, \
+        #                                                                                                                                           test_labels, \
+        #                                                                                                                                           train_NN_predictions, \
+        #                                                                                                                                           test_NN_predictions, \
+        #                                                                                                                                           M)
+        # MAE_GPcorrected_outputOnly.append(MAE)
+        # PCT_within95Interval_GPcorrected_outputOnly.append(PCT_within95Interval)
+        # PCT_within90Interval_GPcorrected_outputOnly.append(PCT_within90Interval)
+        # PCT_within68Interval_GPcorrected_outputOnly.append(PCT_within68Interval)
+        # Storage_mean_GPcorrected_outputOnly.append(mean)
+        # Storage_var_GPcorrected_outputOnly.append(var)
+        # computation_time_GPcorrected_outputOnly.append(computation_time)
+        # hyperparameter_GPcorrected_outputOnly.append(hyperparameter)
+        #
+        # # running "Y+IO" variant
+        # kernel_type = "RBF+RBF"
+        # framework_variant = "GP"
+        # MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
+        #                                                                                                                                           kernel_type, \
+        #                                                                                                                                           normed_train_data, \
+        #                                                                                                                                           normed_test_data, \
+        #                                                                                                                                           train_labels, \
+        #                                                                                                                                           test_labels, \
+        #                                                                                                                                           train_NN_predictions, \
+        #                                                                                                                                           test_NN_predictions, \
+        #                                                                                                                                           M)
+        # MAE_GP.append(MAE)
+        # PCT_within95Interval_GP.append(PCT_within95Interval)
+        # PCT_within90Interval_GP.append(PCT_within90Interval)
+        # PCT_within68Interval_GP.append(PCT_within68Interval)
+        # Storage_mean_GP.append(mean)
+        # Storage_var_GP.append(var)
+        # computation_time_GP.append(computation_time)
+        # hyperparameter_GP.append(hyperparameter)
+        #
+        # # running "Y+I" variant, i.e., original SVGP
+        # kernel_type = "RBF"
+        # framework_variant = "GP_inputOnly"
+        # MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
+        #                                                                                                                                           kernel_type, \
+        #                                                                                                                                           normed_train_data, \
+        #                                                                                                                                           normed_test_data, \
+        #                                                                                                                                           train_labels, \
+        #                                                                                                                                           test_labels, \
+        #                                                                                                                                           train_NN_predictions, \
+        #                                                                                                                                           test_NN_predictions, \
+        #                                                                                                                                           M)
+        # MAE_GP_inputOnly.append(MAE)
+        # PCT_within95Interval_GP_inputOnly.append(PCT_within95Interval)
+        # PCT_within90Interval_GP_inputOnly.append(PCT_within90Interval)
+        # PCT_within68Interval_GP_inputOnly.append(PCT_within68Interval)
+        # Storage_mean_GP_inputOnly.append(mean)
+        # Storage_var_GP_inputOnly.append(var)
+        # computation_time_GP_inputOnly.append(computation_time)
+        # hyperparameter_GP_inputOnly.append(hyperparameter)
+        #
+        # # running "Y+O" variant
+        # kernel_type = "RBFY"
+        # framework_variant = "GP_outputOnly"
+        # MAE, PCT_within95Interval, PCT_within90Interval, PCT_within68Interval, mean, var, computation_time, hyperparameter = RIO_variants_running(framework_variant, \
+        #                                                                                                                                           kernel_type, \
+        #                                                                                                                                           normed_train_data, \
+        #                                                                                                                                           normed_test_data, \
+        #                                                                                                                                           train_labels, \
+        #                                                                                                                                           test_labels, \
+        #                                                                                                                                           train_NN_predictions, \
+        #                                                                                                                                           test_NN_predictions, \
+        #                                                                                                                                           M)
+        # MAE_GP_outputOnly.append(MAE)
+        # PCT_within95Interval_GP_outputOnly.append(PCT_within95Interval)
+        # PCT_within90Interval_GP_outputOnly.append(PCT_within90Interval)
+        # PCT_within68Interval_GP_outputOnly.append(PCT_within68Interval)
+        # Storage_mean_GP_outputOnly.append(mean)
+        # Storage_var_GP_outputOnly.append(var)
+        # computation_time_GP_outputOnly.append(computation_time)
+        # hyperparameter_GP_outputOnly.append(hyperparameter)
 
 
 # Saving experimental results
@@ -361,367 +362,367 @@ result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Resu
 with open(result_file_name, 'wb') as result_file:
     pickle.dump(hyperparameter_GPcorrected, result_file)
 
-kernel_type = "RBF"
-framework_variant = "GP_corrected_inputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(MAE_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within95Interval_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within90Interval_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within68Interval_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_mean_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_var_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(computation_time_GPcorrected_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(hyperparameter_GPcorrected_inputOnly, result_file)
-
-kernel_type = "RBFY"
-framework_variant = "GP_corrected_outputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(MAE_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within95Interval_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within90Interval_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within68Interval_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_mean_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_var_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(computation_time_GPcorrected_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(hyperparameter_GPcorrected_outputOnly, result_file)
-
-kernel_type = "RBF+RBF"
-framework_variant = "GP"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(MAE_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within95Interval_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within90Interval_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within68Interval_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_mean_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_var_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(computation_time_GP, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(hyperparameter_GP, result_file)
-
-kernel_type = "RBF"
-framework_variant = "GP_inputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(MAE_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within95Interval_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within90Interval_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within68Interval_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_mean_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_var_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(computation_time_GP_inputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(hyperparameter_GP_inputOnly, result_file)
-
-kernel_type = "RBFY"
-framework_variant = "GP_outputOnly"
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(MAE_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within95Interval_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within90Interval_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(PCT_within68Interval_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_mean_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(Storage_var_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(computation_time_GP_outputOnly, result_file)
-
-result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-with open(result_file_name, 'wb') as result_file:
-    pickle.dump(hyperparameter_GP_outputOnly, result_file)
-
-
-kernel_type = "RBF+RBF"
-framework_variant = "GP_corrected"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GPcorrected)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP Corrected MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF"
-framework_variant = "GP_corrected_inputOnly"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GPcorrected_inputOnly)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP Corrected_inputOnly MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBFY"
-framework_variant = "GP_corrected_outputOnly"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GPcorrected_outputOnly)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP Corrected_outputOnly MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF+RBF"
-framework_variant = "GP"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GP)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF"
-framework_variant = "GP_inputOnly"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GP_inputOnly)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP_inputOnly MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBFY"
-framework_variant = "GP_outputOnly"
-f = plt.figure()
-plt.scatter(MAE_NN, MAE_GP_outputOnly)
-plt.xlabel('NN MAE [{}]'.format(label_name))
-plt.ylabel('GP_outputOnly MAE [{}]'.format(label_name))
-plt.axis('equal')
-plt.axis('square')
-_ = plt.plot([-100, 100], [-100, 100])
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF+RBF"
-framework_variant = "GP_corrected"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GPcorrected)
-plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GPcorrected)
-plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GPcorrected)
-plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF"
-framework_variant = "GP_corrected_inputOnly"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GPcorrected_inputOnly)
-plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GPcorrected_inputOnly)
-plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GPcorrected_inputOnly)
-plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBFY"
-framework_variant = "GP_corrected_outputOnly"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GPcorrected_outputOnly)
-plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GPcorrected_outputOnly)
-plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GPcorrected_outputOnly)
-plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF+RBF"
-framework_variant = "GP"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GP)
-plt.ylabel('percentage of test points within 95 confidence interval (GP)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GP)
-plt.ylabel('percentage of test points within 90 confidence interval (GP)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GP)
-plt.ylabel('percentage of test points within 68 confidence interval (GP)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBF"
-framework_variant = "GP_inputOnly"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GP_inputOnly)
-plt.ylabel('percentage of test points within 95 confidence interval (GP_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GP_inputOnly)
-plt.ylabel('percentage of test points within 90 confidence interval (GP_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GP_inputOnly)
-plt.ylabel('percentage of test points within 68 confidence interval (GP_inputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-kernel_type = "RBFY"
-framework_variant = "GP_outputOnly"
-f = plt.figure()
-plt.boxplot(PCT_within95Interval_GP_outputOnly)
-plt.ylabel('percentage of test points within 95 confidence interval (GP_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within90Interval_GP_outputOnly)
-plt.ylabel('percentage of test points within 90 confidence interval (GP_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-f = plt.figure()
-plt.boxplot(PCT_within68Interval_GP_outputOnly)
-plt.ylabel('percentage of test points within 68 confidence interval (GP_outputOnly)')
-plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
-f.savefig(plot_file_name, bbox_inches='tight')
-
-plt.show()
+# kernel_type = "RBF"
+# framework_variant = "GP_corrected_inputOnly"
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(MAE_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within95Interval_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within90Interval_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within68Interval_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_mean_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_var_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(computation_time_GPcorrected_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(hyperparameter_GPcorrected_inputOnly, result_file)
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_corrected_outputOnly"
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(MAE_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within95Interval_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within90Interval_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within68Interval_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_mean_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_var_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(computation_time_GPcorrected_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(hyperparameter_GPcorrected_outputOnly, result_file)
+#
+# kernel_type = "RBF+RBF"
+# framework_variant = "GP"
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(MAE_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within95Interval_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within90Interval_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within68Interval_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_mean_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_var_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(computation_time_GP, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(hyperparameter_GP, result_file)
+#
+# kernel_type = "RBF"
+# framework_variant = "GP_inputOnly"
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(MAE_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within95Interval_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within90Interval_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within68Interval_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_mean_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_var_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(computation_time_GP_inputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(hyperparameter_GP_inputOnly, result_file)
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_outputOnly"
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(MAE_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within95Interval_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within90Interval_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(PCT_within68Interval_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_mean_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_mean_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Storage_var_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(Storage_var_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Computation_time_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(computation_time_GP_outputOnly, result_file)
+#
+# result_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Results','Kernel_hyperparameter_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pkl'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# with open(result_file_name, 'wb') as result_file:
+#     pickle.dump(hyperparameter_GP_outputOnly, result_file)
+
+#
+# kernel_type = "RBF+RBF"
+# framework_variant = "GP_corrected"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GPcorrected)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP Corrected MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF"
+# framework_variant = "GP_corrected_inputOnly"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GPcorrected_inputOnly)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP Corrected_inputOnly MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_corrected_outputOnly"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GPcorrected_outputOnly)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP Corrected_outputOnly MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF+RBF"
+# framework_variant = "GP"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GP)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF"
+# framework_variant = "GP_inputOnly"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GP_inputOnly)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP_inputOnly MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_outputOnly"
+# f = plt.figure()
+# plt.scatter(MAE_NN, MAE_GP_outputOnly)
+# plt.xlabel('NN MAE [{}]'.format(label_name))
+# plt.ylabel('GP_outputOnly MAE [{}]'.format(label_name))
+# plt.axis('equal')
+# plt.axis('square')
+# _ = plt.plot([-100, 100], [-100, 100])
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','MAE_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF+RBF"
+# framework_variant = "GP_corrected"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GPcorrected)
+# plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GPcorrected)
+# plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GPcorrected)
+# plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF"
+# framework_variant = "GP_corrected_inputOnly"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GPcorrected_inputOnly)
+# plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GPcorrected_inputOnly)
+# plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GPcorrected_inputOnly)
+# plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_corrected_outputOnly"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GPcorrected_outputOnly)
+# plt.ylabel('percentage of test points within 95 confidence interval (GPcorrected_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GPcorrected_outputOnly)
+# plt.ylabel('percentage of test points within 90 confidence interval (GPcorrected_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GPcorrected_outputOnly)
+# plt.ylabel('percentage of test points within 68 confidence interval (GPcorrected_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF+RBF"
+# framework_variant = "GP"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GP)
+# plt.ylabel('percentage of test points within 95 confidence interval (GP)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GP)
+# plt.ylabel('percentage of test points within 90 confidence interval (GP)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GP)
+# plt.ylabel('percentage of test points within 68 confidence interval (GP)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBF"
+# framework_variant = "GP_inputOnly"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GP_inputOnly)
+# plt.ylabel('percentage of test points within 95 confidence interval (GP_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GP_inputOnly)
+# plt.ylabel('percentage of test points within 90 confidence interval (GP_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GP_inputOnly)
+# plt.ylabel('percentage of test points within 68 confidence interval (GP_inputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# kernel_type = "RBFY"
+# framework_variant = "GP_outputOnly"
+# f = plt.figure()
+# plt.boxplot(PCT_within95Interval_GP_outputOnly)
+# plt.ylabel('percentage of test points within 95 confidence interval (GP_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within95Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within90Interval_GP_outputOnly)
+# plt.ylabel('percentage of test points within 90 confidence interval (GP_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within90Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# f = plt.figure()
+# plt.boxplot(PCT_within68Interval_GP_outputOnly)
+# plt.ylabel('percentage of test points within 68 confidence interval (GP_outputOnly)')
+# plot_file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)),'Plots','PCT_within68Interval_{}_suffledData_{}_{}_{}_{}_M{}_minibatch{}_{}_{}run.pdf'.format(framework_variant, dataset_name, model_name, NN_size, kernel_type, M, minibatch_size, optimizer_name, RUNS))
+# f.savefig(plot_file_name, bbox_inches='tight')
+#
+# plt.show()

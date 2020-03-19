@@ -90,12 +90,12 @@ def dataset_read(dataset_name):
     return dataset
 
 def RIO_variants_running(framework_variant, kernel_type, normed_train_data, normed_test_data, train_labels, test_labels, train_NN_predictions, test_NN_predictions, M):
-    train_NN_errors = train_labels - train_NN_predictions  # residuals
-    combined_train_data = normed_train_data.copy()
+    # DS = CCS
+    train_NN_errors = train_labels - train_NN_predictions  # residuals shape: (824, )
+    combined_train_data = normed_train_data.copy()  # shape: (824, 8)
     combined_train_data['prediction'] = train_NN_predictions
     combined_test_data = normed_test_data.copy()
     combined_test_data['prediction'] = test_NN_predictions
-    minibatch_size = len(normed_train_data)
     input_dimension = len(normed_train_data.columns)
     output_dimension = 1
     Z = combined_train_data.values[:M, :].copy()
@@ -118,7 +118,8 @@ def RIO_variants_running(framework_variant, kernel_type, normed_train_data, norm
         hyperparameter = (m.kern.kernels[0].lengthscales.value, m.kern.kernels[0].variance.value, m.kern.kernels[1].lengthscales.value, m.kern.kernels[1].variance.value, m.likelihood.variance.value)
     else:
         hyperparameter = (m.kern.lengthscales.value, m.kern.variance.value, m.likelihood.variance.value)
-    mean, var = m.predict_y(combined_test_data.values)
+    mean, var = m.predict_y(combined_test_data.values)  # combined_test_data.values.shape = (206,9)
+    # mean, var shape = (206,1)
     time_checkpoint2 = time.time()
     computation_time = time_checkpoint2-time_checkpoint1
     print("computation_time_{}: {}".format(framework_variant, time_checkpoint2-time_checkpoint1))

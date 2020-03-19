@@ -24,12 +24,12 @@ import math
 print(tf.__version__)
 
 #change dataset_index to select which dataset to use (0-11)
-dataset_index = 4
+dataset_index = 10
 
 dataset_name_list = ["yacht","ENB_heating","ENB_cooling","airfoil_self_noise","concrete","winequality-red","winequality-white","CCPP","CASP","SuperConduct","slice_localization","MSD"]
 minibatch_size_list = [246,614,614,1202,824,1279,3918,7654,36584,17010,42800,463715]
 NN_size_list = ["64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","64+64","128+128","256+256","64+64+64+64"]
-RUNS_list = [100,100,100,100,100,100,100,100,100,100,100,10]
+RUNS_list = [100,100,100,100,100,100,100,100,100,100,10,10]
 
 dataset_name = dataset_name_list[dataset_index]
 minibatch_size = minibatch_size_list[dataset_index]
@@ -118,11 +118,16 @@ print("{} noise variance: {}".format(framework_variant, np.array(noise_variance)
 pdf_all_RIO = []
 for run in range(len(Storage_test_labels)):
     pdf_tmp = []
-    for i in range(len(Storage_test_labels[run])):
+    for i in range(len(Storage_test_labels[run])):  # Storage_test_labels is list size 100, each element is vector (206,)
         pdf_tmp.append(-math.log(norm_pdf(Storage_test_labels[run][i], Storage_test_predictions[run][i] + Storage_mean[run][i], Storage_var[run][i])+sys.float_info.epsilon))
-    pdf_all_RIO.append(np.array(pdf_tmp).mean())
+    pdf_all_RIO.append(np.array(pdf_tmp).mean())  # pdf_tmp is (206,) array, and we take the average, then append to 100 size list pdf_all_RIO
 print("{} NLPD mean: {}".format(framework_variant, np.array(pdf_all_RIO).mean()))
 print("{} NLPD std: {}".format(framework_variant, np.array(pdf_all_RIO).std()))
+
+
+import ipdb
+ipdb.set_trace()
+
 
 kernel_type = "RBF"
 framework_variant = "GP_corrected_inputOnly"
